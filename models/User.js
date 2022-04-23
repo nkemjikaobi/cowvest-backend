@@ -4,6 +4,10 @@ const UserSchema = mongoose.Schema({
 		type: String,
 		required: true,
 	},
+	balance: {
+		type: Number,
+		default: 0,
+	},
 	last_name: {
 		type: String,
 		required: true,

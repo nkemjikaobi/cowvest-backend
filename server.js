@@ -15,6 +15,7 @@ app.use(express.json({ extended: false }));
 //Define Routes
 app.use('/api/v1/auth', require('./routes/auth'));
 app.use('/api/v1/users', require('./routes/users'));
+app.use('/api/v1/fund', require('./routes/fund'));
 
 
 app.listen(process.env.PORT, () =>
