@@ -12,6 +12,10 @@ const BudgetSchema = mongoose.Schema({
 		type: Number,
 		required: true,
 	},
+	start_price: {
+		type: Number,
+		required: true,
+	},
 	start_date: {
 		type: Date,
 		required: true,

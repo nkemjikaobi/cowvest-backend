@@ -38,6 +38,7 @@ router.post('/', auth, async (req, res) => {
 		const newBudget = new Budget({
 			name,
 			max_spending,
+			start_price: max_spending,
 			start_date,
 			end_date,
 			hasExpired,

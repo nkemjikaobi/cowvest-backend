@@ -3,6 +3,7 @@ const router = express.Router();
 const auth = require('../middleware/auth');
 
 const Expense = require('../models/Expense');
+const Budget = require('../models/Budget');
 
 //@route   GET api/v1/expenses/:budget_id
 //@desc    Get all expenses for budgets
@@ -39,6 +40,26 @@ router.post('/', auth, async (req, res) => {
 	const { narration, amount, budget } = req.body;
 
 	try {
+		//Get the budget
+		let currentBudget = await Budget.findById(budget);
+
+		if (currentBudget.max_spending < amount) {
+			return res
+				.status(500)
+				.json({ msg: `Expense exceeds budget for ${currentBudget.name}` });
+		}
+
+		const budgetFields = {};
+		budgetFields.max_spending =
+			parseInt(currentBudget.max_spending) - parseInt(amount);
+
+		//Update the budget
+		currentBudget = await Budget.findByIdAndUpdate(
+			req.user.id,
+			{ $set: budgetFields },
+			{ new: true }
+		);
+
 		const newExpense = new Expense({
 			narration,
 			amount,
@@ -47,7 +68,7 @@ router.post('/', auth, async (req, res) => {
 		});
 
 		const expense = await newExpense.save();
-		res.json({ expense, msg: 'Expense Added' });
+		res.json({ expense, currentBudget, msg: 'Expense Added' });
 	} catch (err) {
 		console.error(err.message);
 		res.status(500).json({ msg: 'Server Error' });
