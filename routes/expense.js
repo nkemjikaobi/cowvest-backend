@@ -17,6 +17,21 @@ router.get('/:budget_id', auth, async (req, res) => {
 	}
 });
 
+//@route   GET api/v1/expenses
+//@desc    Get all expenses for a user
+//@access  Private
+router.get('/', auth, async (req, res) => {
+	try {
+		const expenses = await Expense.find({ user: req.user.id }).sort({
+			date: -1,
+		});
+		res.json(expenses);
+	} catch (err) {
+		console.error(err.message);
+		res.status(500).json({ msg: 'Server Error' });
+	}
+});
+
 //@route   POST api/v1/expenses
 //@desc    Add new expense
 //@access  Private
@@ -28,6 +43,7 @@ router.post('/', auth, async (req, res) => {
 			narration,
 			amount,
 			budget,
+			user: req.user.id,
 		});
 
 		const expense = await newExpense.save();
