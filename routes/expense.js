@@ -10,7 +10,10 @@ const Budget = require('../models/Budget');
 //@access  Private
 router.get('/:budget_id', auth, async (req, res) => {
 	try {
-		const expenses = await Expense.find({ budget: req.params.id }).sort();
+		const expenses = await Expense.find({ budget: req.params.budget_id })
+			.populate('budget')
+			.sort()
+			.lean();
 		res.json(expenses);
 	} catch (err) {
 		console.error(err.message);

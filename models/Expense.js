@@ -2,11 +2,11 @@ const mongoose = require('mongoose');
 const ExpenseSchema = mongoose.Schema({
 	user: {
 		type: mongoose.Schema.Types.ObjectId,
-		ref: 'users',
+		ref: 'user',
 	},
 	budget: {
 		type: mongoose.Schema.Types.ObjectId,
-		ref: 'budgets',
+		ref: 'budget',
 		required: true,
 	},
 	narration: {
