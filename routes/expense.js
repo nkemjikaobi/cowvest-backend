@@ -55,7 +55,7 @@ router.post('/', auth, async (req, res) => {
 
 		//Update the budget
 		currentBudget = await Budget.findByIdAndUpdate(
-			req.user.id,
+			budget,
 			{ $set: budgetFields },
 			{ new: true }
 		);
