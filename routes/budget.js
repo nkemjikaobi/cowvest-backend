@@ -3,6 +3,7 @@ const router = express.Router();
 const auth = require('../middleware/auth');
 
 const Budget = require('../models/Budget');
+const User = require('../models/User');
 
 //@route   GET api/v1/budgets
 //@desc    Get all users budgets
@@ -25,6 +26,15 @@ router.get('/', auth, async (req, res) => {
 router.post('/', auth, async (req, res) => {
 	const { name, max_spending, start_date, end_date, hasExpired } = req.body;
 	try {
+		let user = await User.findById(req.user.id);
+
+		if (user.balance < max_spending) {
+			return res.status(500).json({ msg: 'Insufficient Funds' });
+		}
+
+		const userFields = {};
+		userFields.balance = parseInt(user.balance) - parseInt(max_spending);
+
 		const newBudget = new Budget({
 			name,
 			max_spending,
@@ -35,7 +45,15 @@ router.post('/', auth, async (req, res) => {
 		});
 
 		const budget = await newBudget.save();
-		res.json(budget);
+
+		//Update the user
+		user = await User.findByIdAndUpdate(
+			req.user.id,
+			{ $set: userFields },
+			{ new: true }
+		);
+
+		res.json({ budget, user, msg: 'Budget Created' });
 	} catch (err) {
 		console.error(err.message);
 		res.status(500).json({ msg: 'Server Error' });
@@ -65,7 +83,7 @@ router.delete('/:id', auth, async (req, res) => {
 
 		//Delete the budget
 		await Budget.findByIdAndRemove(req.params.id);
-		res.json({ msg: 'Budget Removed ' });
+		res.json({ id: req.params.id, msg: 'Budget Removed ' });
 	} catch (err) {
 		console.error(err.message);
 		res.status(500).json({ msg: 'Server Error' });

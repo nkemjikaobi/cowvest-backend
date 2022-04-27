@@ -18,7 +18,7 @@ router.get('/:budget_id', auth, async (req, res) => {
 });
 
 //@route   POST api/v1/expenses
-//@desc    Add new budget
+//@desc    Add new expense
 //@access  Private
 router.post('/', auth, async (req, res) => {
 	const { narration, amount, budget } = req.body;
@@ -31,7 +31,7 @@ router.post('/', auth, async (req, res) => {
 		});
 
 		const expense = await newExpense.save();
-		res.json(expense);
+		res.json({ expense, msg: 'Expense Added' });
 	} catch (err) {
 		console.error(err.message);
 		res.status(500).json({ msg: 'Server Error' });
