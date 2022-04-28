@@ -21,6 +21,7 @@ app.use('/api/v1/auth', require('./routes/auth'));
 app.use('/api/v1/users', require('./routes/users'));
 app.use('/api/v1/fund', require('./routes/fund'));
 app.use('/api/v1/budgets', require('./routes/budget'));
+app.use('/api/v1/history', require('./routes/history'));
 app.use('/api/v1/expenses', require('./routes/expense'));
 
 
