@@ -54,6 +54,16 @@ router.post('/', auth, async (req, res) => {
 			{ new: true }
 		);
 
+		// Add it to history
+		const newHistory = new History({
+			user: req.user.id,
+			name: `Created budget for ${name}`,
+			type: 'debit',
+			amount: parseInt(max_spending),
+		});
+
+		await newHistory.save();
+
 		res.json({ budget, user, msg: 'Budget Created' });
 	} catch (err) {
 		console.error(err.message);

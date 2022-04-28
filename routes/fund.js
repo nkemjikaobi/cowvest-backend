@@ -4,6 +4,7 @@ const router = express.Router();
 const auth = require('../middleware/auth');
 
 const User = require('../models/User');
+const History = require('../models/History');
 
 //@route   PUT api/v1/fund
 //@desc    Fund wallet
@@ -27,6 +28,17 @@ router.put('/', auth, async (req, res) => {
 			{ $set: userFields },
 			{ new: true }
 		);
+
+		// Add it to history
+		const newHistory = new History({
+			user: req.user.id,
+			name: 'Funded Wallet',
+			type: 'credit',
+			amount: parseInt(amount),
+		});
+
+		await newHistory.save();
+
 		res.status(200).json({ user, msg: `Wallet Funded with ₦${amount}` });
 	} catch (err) {
 		console.error(err.message);
