@@ -4,6 +4,7 @@ const auth = require('../middleware/auth');
 
 const Budget = require('../models/Budget');
 const User = require('../models/User');
+const History = require('../models/History');
 
 //@route   GET api/v1/budgets
 //@desc    Get all users budgets
